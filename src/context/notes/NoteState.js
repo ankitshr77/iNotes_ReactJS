@@ -21,7 +21,7 @@ const NoteState = (props) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjNlOGFiYWVlZjA3N2I0MWYxMTlkODYzIn0sImlhdCI6MTY3NjQ0NTU1M30.dfR09yocIrP2rh76f-0Rr9ANBga2b3Q3XgmVTHPb6sg"
+          "auth-token": localStorage.getItem('token')
         },
       });
       const json = await response.json();
@@ -40,12 +40,13 @@ const NoteState = (props) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjNlOGFiYWVlZjA3N2I0MWYxMTlkODYzIn0sImlhdCI6MTY3NjQ0NTU1M30.dfR09yocIrP2rh76f-0Rr9ANBga2b3Q3XgmVTHPb6sg"
+        "auth-token": localStorage.getItem('token')
       },
       body: JSON.stringify({title, description, tag}),
     });
-    const json = await response.json;
-    console.log(json)
+
+    const note = await response.json();
+    setNotes(notes.concat(note))
   };
 
 
@@ -59,7 +60,7 @@ const NoteState = (props) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjNlOGFiYWVlZjA3N2I0MWYxMTlkODYzIn0sImlhdCI6MTY3NjQ0NTU1M30.dfR09yocIrP2rh76f-0Rr9ANBga2b3Q3XgmVTHPb6sg"
+        "auth-token": localStorage.getItem('token')
       }
     });
     const json = response.json();
@@ -82,7 +83,7 @@ const NoteState = (props) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjNlOGFiYWVlZjA3N2I0MWYxMTlkODYzIn0sImlhdCI6MTY3NjQ0NTU1M30.dfR09yocIrP2rh76f-0Rr9ANBga2b3Q3XgmVTHPb6sg"
+        "auth-token": localStorage.getItem('token')
       },
       body: JSON.stringify({title, description, tag}),
     });

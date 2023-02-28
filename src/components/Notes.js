@@ -3,12 +3,22 @@ import Noteitem from "./Noteitem";
 import noteContext from "../context/notes/noteContext";
 import { useContext, useState } from "react";
 import { useEffect, useRef } from "react";
+import { useNavigate } from 'react-router-dom';
 
-const Notes = () => {
+const Notes = (props) => {
   const context = useContext(noteContext);
+  const navigate = useNavigate();
+
   const { notes, getNotes, editNote } = context;
   useEffect(() => {
-    getNotes();
+    if(localStorage.getItem('token')){
+      getNotes();
+    }
+    else{
+      // redirected if not logged in 
+      navigate("/login")
+    }
+
     // eslint-disable-next-line
   }, []);
 
@@ -19,13 +29,14 @@ const Notes = () => {
 
   const updateNote = (currentNote) => {
     ref.current.click();
-    setNote({id: currentNote._id, etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag})
-  };
+    setNote({id: currentNote._id, etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag}) 
+   };
 
   const handleClick = (e)=>{
     e.preventDefault();
     editNote(note.id, note.etitle, note.edescription, note.etag)
     refClose.current.click();
+    props.showAlert("Updated Successfully", "success");
 
 }
 
@@ -35,7 +46,7 @@ const onChange = (e)=>{
 
   return (
     <>
-      <AddNote />
+      <AddNote  showAlert = {props.showAlert}/>
 
       <button
         type="button"
@@ -75,12 +86,12 @@ const onChange = (e)=>{
 
               <div className="mb-2">
               <label htmlFor="title" className="form-label">Title</label>
-              <input type="text" className="form-control" id="etitle" name='etitle' value={note.etitle} aria-describedby="emailHelp" onChange={onChange}/>
+              <input type="text" className="form-control" id="etitle" name='etitle' value={note.etitle} aria-describedby="emailHelp" onChange={onChange} minLength={5} required/>
               </div>
 
               <div className="mb-2">
               <label htmlFor="description" className="form-label">Description</label>
-              <input type="text" className="form-control" id="edescription" name="edescription" value={note.edescription} onChange={onChange}/>
+              <input type="text" className="form-control" id="edescription" name="edescription" value={note.edescription} onChange={onChange} minLength={5} required/>
               </div>
 
               <div className="mb-2">
@@ -100,7 +111,7 @@ const onChange = (e)=>{
                 Close
               </button>
 
-              <button onClick={handleClick} type="button" className="btn btn-primary">
+              <button disabled={note.etitle.length<5 || note.edescription.length<5}onClick={handleClick} type="button" className="btn btn-primary">
                 Update Note
               </button>
             </div>
@@ -111,9 +122,13 @@ const onChange = (e)=>{
       <div className="container">
         <div className="row my-3">
           <h2 className="text-center">Your Notes</h2>
+          <div className="container text-center">
+          {notes.length===0 && <h4>No Notes to Display</h4>}
+          </div>
+          
           {notes.map((note) => {
             return (
-              <Noteitem key={note._id} updateNote={updateNote} note={note} />
+              <Noteitem key={note._id} updateNote={updateNote} showAlert={props.showAlert} note={note} />
             );
           })}
         </div>
